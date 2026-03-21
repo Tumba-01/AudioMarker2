@@ -27,23 +27,36 @@
         <span>Audiomarker</span>
       </button>
 
-      <button
-        class="lang-toggle pressable"
-        id="langToggle"
-        data-lang="en"
-        aria-label="Switch language"
-        type="button"
-      >
-        <span class="lang-thumb"></span>
-        <span class="lang-labels">
-          <span class="lang-label en">EN</span>
-          <span class="lang-label de">DE</span>
-        </span>
-      </button>
+      <div class="topbar-right">
+        <button class="brand-button theme-toggle-btn" id="themeToggle" type="button" title="Toggle theme picker">
+          <i class="fa-solid fa-palette brand-icon" aria-hidden="true"></i>
+        </button>
+
+        <button
+          class="lang-toggle pressable"
+          id="langToggle"
+          data-lang="en"
+          aria-label="Switch language"
+          type="button"
+        >
+          <span class="lang-thumb"></span>
+          <span class="lang-labels">
+            <span class="lang-label en">EN</span>
+            <span class="lang-label de">DE</span>
+          </span>
+        </button>
+      </div>
     </header>
 
-
     <main class="content-wrap recording" id="contentWrap">
+      <section class="debug-panel hidden" id="debugPanel">
+        <div class="debug-box" id="consoleLog">Console Log</div>
+        <div class="debug-box" id="output">
+          <div id="wakeLockAPIAvailable"></div>
+        </div>
+        <button class="debug-btn pressable hidden" id="randomCheck" type="button">Random 50%</button>
+      </section>
+
       <section class="hero card">
         <div class="hero-main">
           <div class="eyebrow" data-i18n="sessionStatus">Session Status</div>
@@ -71,14 +84,6 @@
             <div class="mic-dot"></div>
           </div>
         </div>
-      </section>
-
-      <section class="debug-panel hidden" id="debugPanel">
-        <div class="debug-box" id="consoleLog">Console Log</div>
-        <div class="debug-box" id="output">
-          <div id="wakeLockAPIAvailable"></div>
-        </div>
-        <button class="debug-btn pressable hidden" id="randomCheck" type="button">Random 50%</button>
       </section>
 
       <section class="stats-grid">
@@ -168,6 +173,15 @@
         </div>
       </div>
     </dialog>
+
+    <!-- Theme Drawer -->
+    <div class="theme-drawer-backdrop hidden" id="themeBackdrop"></div>
+    <div class="theme-drawer hidden" id="themeDrawer">
+      <div class="theme-drawer-handle"></div>
+      <div class="theme-drawer-label">Theme</div>
+      <div class="theme-swatches" id="themeSwatches"></div>
+    </div>
+
   </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>

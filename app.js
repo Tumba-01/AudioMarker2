@@ -40,6 +40,127 @@ const commentConfirm = document.getElementById("commentConfirm");
 const commentList = document.getElementById("commentList");
 
 
+// ─── THEME SYSTEM ─────────────────────────────────────────────────────────────
+
+const THEMES = [
+  { id: "obsidian-glow",    label: "Obsidian Glow", dot: "#a6f7c3" },
+  { id: "neural-pulse",     label: "Neural Pulse",  dot: "#a4e6ff" },
+  { id: "amethyst-command", label: "Amethyst",      dot: "#ff7afb" },
+  { id: "solar-flare",      label: "Solar Flare",   dot: "#ff9f4a" },
+  { id: "obsidian-console", label: "Console",       dot: "#9cff93" },
+  { id: "kinetic-console",  label: "Kinetic",       dot: "#00f2ff" },
+  { id: "stellar-command",  label: "Stellar",       dot: "#dfb7ff" },
+  { id: "sovereign",        label: "Sovereign",     dot: "#e9c349" },
+  { id: "nocturne",         label: "Nocturne",      dot: "#f2ca50" },
+  { id: "win96",            label: "Windows 96",    dot: "#000080" },
+  { id: "winxp",            label: "Windows XP 🪟", dot: "#4aaa34" },
+  { id: "metro",            label: "Metro Dark 🟦", dot: "#00adef" },
+  { id: "hazmat",           label: "Hazmat ☢️", dot: "#ffdc00" },
+  { id: "oneui",            label: "One UI",  dot: "#4a90d9" },
+  { id: "ios18",            label: "iOS 18",  dot: "#0a84ff" },
+  { id: "msdos",            label: "MS-DOS 💾",    dot: "#aaaaaa" },
+  { id: "macos1",           label: "Mac OS 1 🖱️",  dot: "#000000" },
+  { id: "c64",              label: "Commodore 64 📺", dot: "#a0a0ff" },
+  { id: "cyberpunk",        label: "Cyberpunk 2077 ⚡", dot: "#ffe000" },
+  { id: "nfsmw",            label: "Most Wanted 🚗", dot: "#ff8c00" },
+  { id: "csgo",             label: "CS:GO 🔫", dot: "#f0b000" },
+  { id: "chroma",           label: "Chroma ✨",     dot: "#ff79c6" },
+];
+
+let currentTheme = localStorage.getItem("theme") || "obsidian-glow";
+
+function applyTheme(themeId) {
+  currentTheme = themeId;
+  document.documentElement.setAttribute("data-theme", themeId);
+  localStorage.setItem("theme", themeId);
+  document.querySelectorAll(".theme-swatch").forEach((el) => {
+    el.classList.toggle("active", el.dataset.themeId === themeId);
+  });
+
+  if (themeId === "winxp") {
+    document.body.style.backgroundImage = "url('https://i.redd.it/puzkje595kf81.jpg')";
+    document.body.style.backgroundSize = "cover";
+    document.body.style.backgroundPosition = "center";
+    document.body.style.backgroundRepeat = "no-repeat";
+  } else {
+    document.body.style.backgroundImage = "";
+    document.body.style.backgroundSize = "";
+    document.body.style.backgroundPosition = "";
+    document.body.style.backgroundRepeat = "";
+  }
+
+  closeThemeDrawer();
+}
+
+function buildThemeSwatches() {
+  const container = document.getElementById("themeSwatches");
+  if (!container) return;
+  container.innerHTML = "";
+  THEMES.forEach((theme) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "theme-swatch pressable";
+    btn.dataset.themeId = theme.id;
+    btn.innerHTML = `<span class="theme-swatch-dot" style="background:${theme.dot}"></span>${theme.label}`;
+    btn.addEventListener("click", () => applyTheme(theme.id));
+    container.appendChild(btn);
+  });
+  applyTheme(currentTheme);
+}
+
+function toggleThemeDrawer() {
+  const drawer = document.getElementById("themeDrawer");
+  const backdrop = document.getElementById("themeBackdrop");
+  const isHidden = drawer.classList.contains("hidden");
+  drawer.classList.toggle("hidden", !isHidden);
+  backdrop.classList.toggle("hidden", !isHidden);
+}
+
+function closeThemeDrawer() {
+  document.getElementById("themeDrawer").classList.add("hidden");
+  document.getElementById("themeBackdrop").classList.add("hidden");
+}
+
+buildThemeSwatches();
+document.getElementById("themeToggle").addEventListener("click", toggleThemeDrawer);
+document.getElementById("themeBackdrop").addEventListener("click", closeThemeDrawer);
+
+
+
+function buildThemeSwatches() {
+  const container = document.getElementById("themeSwatches");
+  if (!container) return;
+  container.innerHTML = "";
+  THEMES.forEach((theme) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "theme-swatch pressable";
+    btn.dataset.themeId = theme.id;
+    btn.innerHTML = `<span class="theme-swatch-dot" style="background:${theme.dot}"></span>${theme.label}`;
+    btn.addEventListener("click", () => applyTheme(theme.id));
+    container.appendChild(btn);
+  });
+  applyTheme(currentTheme);
+}
+
+document.addEventListener("click", (e) => {
+  const anchor = document.getElementById("themePickerAnchor");
+  const panel = document.getElementById("themePanel");
+  if (!anchor.contains(e.target)) {
+    panel.classList.add("hidden");
+  }
+});
+
+function toggleThemePanel() {
+  const panel = document.getElementById("themePanel");
+  panel.classList.toggle("hidden");
+}
+
+// Init
+buildThemeSwatches();
+document.getElementById("themeToggle").addEventListener("click", toggleThemePanel);
+
+
 const translations = {
   en: {
     htmlLang: "en",
@@ -1057,3 +1178,4 @@ document.addEventListener("visibilitychange", async () => {
 applyLanguage();
 renderRows();
 updateStatus();
+
