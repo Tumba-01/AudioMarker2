@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Audiomarker</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    crossorigin="anonymous"
+    referrerpolicy="no-referrer"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <button class="brand brand-button" id="debugToggle" type="button" title="Toggle debug tools">
+        <i class="fa-solid fa-wave-square brand-icon" aria-hidden="true"></i>
+        <span>Audiomarker</span>
+      </button>
+
+      <button
+        class="lang-toggle pressable"
+        id="langToggle"
+        data-lang="en"
+        aria-label="Switch language"
+        type="button"
+      >
+        <span class="lang-thumb"></span>
+        <span class="lang-labels">
+          <span class="lang-label en">EN</span>
+          <span class="lang-label de">DE</span>
+        </span>
+      </button>
+    </header>
+
+
+    <main class="content-wrap recording" id="contentWrap">
+      <section class="hero card">
+        <div class="hero-main">
+          <div class="eyebrow" data-i18n="sessionStatus">Session Status</div>
+
+          <div class="status-line">
+            <h1 class="status-text" id="statusText" data-i18n="readyToRecord">Ready to record</h1>
+
+            <div class="mini-wave" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+
+          <button class="primary-btn pressable" id="recordBtn" type="button">
+            <i class="fa-solid fa-circle btn-icon" id="recordIcon" aria-hidden="true"></i>
+            <span id="recordBtnLabel" data-i18n="startRecording">Start Recording</span>
+          </button>
+        </div>
+
+        <div class="hero-indicator">
+          <div class="mic-orb" aria-hidden="true">
+            <div class="mic-dot"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="debug-panel hidden" id="debugPanel">
+        <div class="debug-box" id="consoleLog">Console Log</div>
+        <div class="debug-box" id="output">
+          <div id="wakeLockAPIAvailable"></div>
+        </div>
+        <button class="debug-btn pressable hidden" id="randomCheck" type="button">Random 50%</button>
+      </section>
+
+      <section class="stats-grid">
+        <div class="card progress-card">
+          <div class="eyebrow" data-i18n="progress">Progress</div>
+
+          <div class="progress-main">
+            <span class="big" id="progressCount">0/0</span>
+            <span class="small" id="progressCheckedLabel" data-i18n="checked">Checked</span>
+          </div>
+
+          <div class="progress-bar" aria-hidden="true">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div class="side-actions">
+          <button class="card side-btn pressable" id="resetBtn" type="button">
+            <i class="fa-solid fa-rotate-right btn-icon small-icon" aria-hidden="true"></i>
+            <span data-i18n="reset">Reset</span>
+          </button>
+
+          <label class="card side-btn pressable file-trigger" id="keyLabel" for="keyFile" title="Load key">
+            <i class="fa-solid fa-key btn-icon small-icon" aria-hidden="true"></i>
+            <span id="keyLabelText" data-i18n="key">Key</span>
+          </label>
+          <input type="file" id="keyFile" accept=".txt,.json" hidden />
+        </div>
+      </section>
+
+      <section class="bottom-actions">
+        <label class="card bottom-btn pressable file-trigger" id="importLabel" for="importJson" title="Import JSON">
+          <i class="fa-solid fa-upload btn-icon small-icon" aria-hidden="true"></i>
+          <span id="importLabelText" data-i18n="import">Import</span>
+        </label>
+        <input type="file" id="importJson" accept=".json" hidden />
+
+        <button class="card bottom-btn pressable" id="exportBtn" type="button" title="Export">
+          <i class="fa-solid fa-download btn-icon small-icon" aria-hidden="true"></i>
+          <span id="exportBtnText" data-i18n="export">Export</span>
+        </button>
+      </section>
+
+      <section class="card table-card">
+        <div class="table-head">
+          <div id="tableHeaderNumber" data-i18n="number">No</div>
+          <div id="tableHeaderLocation" data-i18n="place">Place</div>
+          <div id="tableHeaderCheck" data-i18n="check">Check</div>
+        </div>
+
+        <div class="markers-area">
+          <div class="empty-state active" id="emptyState">
+            <i class="fa-solid fa-location-crosshairs empty-icon" aria-hidden="true"></i>
+            <p id="emptyText" data-i18n="empty">
+              No markers recorded yet. Load a key to begin.
+            </p>
+          </div>
+
+          <div class="rows" id="rows"></div>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="exportFormatModal" class="modal">
+      <div class="modal-body">
+        <h2 id="exportFormatTitle">Export Format</h2>
+        <p id="exportFormatText">Choose the export format:</p>
+
+        <div class="modal-actions stacked">
+          <button class="modal-btn pressable" id="exportJsonBtn" type="button">JSON</button>
+          <button class="modal-btn pressable" id="exportPdfBtn" type="button">PDF</button>
+          <button class="modal-btn modal-btn-danger pressable" id="exportFormatCancel" type="button">Cancel</button>
+        </div>
+      </div>
+    </dialog>
+
+    <dialog id="commentModal" class="modal">
+      <div class="modal-body">
+        <h2 id="commentModalTitle">Unchecked Numbers</h2>
+        <p id="commentModalText">Please provide a reason for each unchecked number before exporting.</p>
+
+        <div id="commentList" class="comment-list"></div>
+
+        <div class="modal-actions">
+          <button class="modal-btn modal-btn-danger pressable" id="commentCancel" type="button">Cancel</button>
+          <button class="modal-btn pressable" id="commentConfirm" type="button">Confirm</button>
+        </div>
+      </div>
+    </dialog>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
